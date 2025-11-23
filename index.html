@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Portfolio – Paul Collinet</title>
+<style>
+/* GLOBAL */
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:#f4f4f4;color:#111;scroll-behavior:smooth;}
+
+/* CONTRASTE */
+h1, h2, p, .arrow svg, .toggle-container { filter: brightness(1.2); }
+
+/* HEADER */
+header{min-height:100vh;display:grid;place-items:center;padding:40px;position:relative;}
+header h1{font-size:3.5rem;font-weight:800;}
+header p{margin-top:12px;font-size:1.3rem;color:#333;}
+
+/* ARROWS */
+.arrow{margin-top:40px;cursor:pointer;display:flex;justify-content:center;}
+.arrow svg circle{stroke:#66c2ff;stroke-width:4;fill:none;stroke-dasharray:314;stroke-dashoffset:314;transition:stroke-dashoffset 0.6s ease;}
+.arrow:hover svg circle{stroke-dashoffset:0;}
+.arrow svg polyline{stroke:#66c2ff;stroke-width:5;fill:none;stroke-linecap:round;}
+
+/* SHOWREEL */
+#showreel-section{width:100vw;height:100vh;display:flex;justify-content:center;align-items:center;background:#f4f4f4;}
+#showreel-section video{width:90%;max-width:1200px;border-radius:12px;}
+
+/* CENTER ARROW UNDER SHOWREEL */
+.center-arrow{width:100%;text-align:center;margin:40px 0;}
+
+/* TOGGLE SWITCH */
+.toggle-container{width:180px;height:46px;background:#e0e0e0;border-radius:30px;position:relative;margin:0 auto 40px;display:flex;align-items:center;cursor:pointer;}
+.toggle-handle{width:80px;height:80%;background:#66c2ff;border-radius:30px;position:absolute;top:10%;left:5px;transition:transform 0.3s ease;}
+.toggle-container.active .toggle-handle{transform:translateX(90px);}
+.toggle-labels{width:100%;display:flex;justify-content:space-between;padding:0 15px;position:relative;z-index:2;pointer-events:none;}
+.toggle-labels span{opacity:0.6;font-size:0.9rem;}
+.toggle-container.active .toggle-labels span:last-child{opacity:1;}
+.toggle-container:not(.active) .toggle-labels span:first-child{opacity:1;}
+
+/* GALLERY */
+.gallery{width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0;}
+.gallery img,.gallery video{width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:filter 0.4s ease;}
+.gallery img:hover,.gallery video:hover{filter:grayscale(0%);}
+
+/* POPUP */
+.popup{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);display:none;justify-content:center;align-items:center;padding:0;}
+.popup-content{max-width:90vw;max-height:90vh;display:flex;justify-content:center;align-items:center;}
+.popup-content img,.popup-content video{max-width:100%;max-height:100%;border-radius:8px;}
+.close-btn{position:absolute;top:20px;right:30px;font-size:2rem;color:#66c2ff;background:none;border:none;cursor:pointer;transition:transform .25s ease,opacity .25s ease;}
+.close-btn:hover{transform:scale(1.1);opacity:0.8;}
+
+/* RESPONSIVE */
+@media(max-width:1000px){.gallery{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.gallery{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Paul Collinet</h1>
+  <p>Réalisateur – Créateur audiovisuel</p>
+  <div class="arrow" onclick="scrollToShowreel()">
+    <svg width="60" height="60" viewBox="0 0 120 120">
+      <circle cx="60" cy="60" r="50" />
+      <polyline points="45,55 60,70 75,55" />
+    </svg>
+  </div>
+</header>
+
+<section id="showreel-section">
+  <video src="images/EMMA.mp4" controls autoplay muted></video>
+</section>
+
+<div class="center-arrow">
+  <div class="arrow" onclick="scrollToProjects()">
+    <svg width="60" height="60" viewBox="0 0 120 120">
+      <circle cx="60" cy="60" r="50" />
+      <polyline points="45,55 60,70 75,55" />
+    </svg>
+  </div>
+</div>
+
+<section id="projects">
+  <div class="toggle-container" id="modeToggle" onclick="toggleMode()">
+    <div class="toggle-handle"></div>
+    <div class="toggle-labels">
+      <span>Photos</span>
+      <span>Vidéos</span>
+    </div>
+  </div>
+
+  <div class="gallery" id="photoGallery">
+    <img src="images/projet 1.png" onclick="openPopup(this.src)" />
+    <img src="images/projet 2.png" onclick="openPopup(this.src)" />
+    <img src="images/projet 4.png" onclick="openPopup(this.src)" />
+  </div>
+
+  <div class="gallery" id="videoGallery" style="display:none;">
+    <video src="images/EMMA.mp4" onclick="openPopupVideo(this.src)"></video>
+    <video src="video2.mp4" onclick="openPopupVideo(this.src)"></video>
+  </div>
+</section>
+
+<div class="popup" id="popup">
+  <span class="close-btn" onclick="closePopup()">×</span>
+  <div class="popup-content" id="popupContent"></div>
+</div>
+
+<script>
+function scrollToShowreel(){document.getElementById('showreel-section').scrollIntoView({behavior:'smooth'});}
+function scrollToProjects(){document.getElementById('projects').scrollIntoView({behavior:'smooth'});}
+
+function toggleMode(){
+  const toggle=document.getElementById('modeToggle');
+  const photos=document.getElementById('photoGallery');
+  const videos=document.getElementById('videoGallery');
+  toggle.classList.toggle('active');
+  if(toggle.classList.contains('active')){
+    photos.style.display='none';
+    videos.style.display='grid';
+  } else {
+    photos.style.display='grid';
+    videos.style.display='none';
+  }
+}
+function openPopup(src){
+  document.getElementById('popupContent').innerHTML=`<img src='${src}'>`;
+  document.getElementById('popup').style.display='flex';
+}
+function openPopupVideo(src){
+  document.getElementById('popupContent').innerHTML=`<video src='${src}' controls autoplay></video>`;
+  document.getElementById('popup').style.display='flex';
+}
+function closePopup(){document.getElementById('popup').style.display='none';}
+</script>
+
+</body>
+</html>
